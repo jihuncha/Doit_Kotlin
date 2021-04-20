@@ -1,5 +1,5 @@
 // as -> 유용해보인다.
-import com.kotlin.kt_210419.Person as User
+import com.kotlin.chap02.Person as User
 
 fun main() {
 //    println("Hello Kotlin")

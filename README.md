@@ -15,3 +15,26 @@ val username = "Kildong"
 ~~~
 
 * 코틀린 자료형은 참조형 자료형을 사용
+
+* 표현식은 {$} (중괄호) 로 , 변수는 $로
+
+* 다중 문자열 처리
+~~~kotlin
+    // 다중 문자열 처리
+    val formattedString = """
+       var a = 6
+       var b = "Kotlin"
+       println(a + num)
+    """
+~~~
+
+* typealias 로 별명 붙이기
+~~~kotlin
+typealias Username = String
+
+fun main() {
+    //username 이 string
+    var user:Username = "Kildong"
+}
+~~~
+

@@ -1,4 +1,4 @@
-package com.kotlin.kt_210419.section2
+package com.kotlin.chap02.section2
 
 fun main() {
     val number = 10

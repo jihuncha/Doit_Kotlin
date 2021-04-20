@@ -1,3 +1,3 @@
-package com.kotlin.kt_210419
+package com.kotlin.chap02
 
 class Person (val name: String, val age: Int)
