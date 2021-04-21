@@ -134,18 +134,115 @@ fun main() {
 ~~~
 
 * Any형 변수의 변환
+
 ~~~ kotlin
     var a: Any = 1
     a = 20L
     println("a: $a type: ${a.javaClass}") // a 의 자바 기본형을 출력하면 long이 나옴
 ~~~
+
 ~~~ kotlin
     fun main() {
-        checkArg("Hello")
-        checkArg(5)
+        checkArg("Hello") //String
+        checkArg(5)       //Int
     }
 
     fun checkArg(x: Any) {
         println("${x.javaClass} type!!")
     }
 ~~~
+
+### 2-4. 코틀린 연산자
+
+* 기본적인 연산자는 JAVA와 비슷하다.
+
+1. 산술 연산자
+   
+2. 대입 연산자
+   
+3. 증가 감소 연산자
+~~~ kotlin
+    var num1 = 10
+    var num2 = 10
+
+    // 연산자 수행 이전에
+    val result1 = ++num1
+    //연산자 수행 이후에
+    val result2 = num2++
+
+    println("result1 : $result1") //11
+    println("result2 : $result2") //10
+~~~
+
+4. 비교 연산자
+   
+   === !== // 참조연산자 (주소까지 같은지 판별)
+
+5. 논리 연산자
+   
+6. 비트 연산자
+
+6-1. 비트 메서드
+
+* 부호 비트는 이동시키지 않으면서 사라진 비트의 값을 0으로 채운다.
+
+![비트연산자.png](src/com/kotlin/image/bit_operator_1.png)
+
+~~~kotlin
+fun main() {
+    var x = 4
+    var y = 0b0000_1010 //10진수 5
+    var z = 0x0F //10진수 15
+
+    println("x shl 2 -> ${x shl 2}") // 16
+    println("x.inv() -> ${x.inv()}") // -5
+
+    println("y shr 2 -> ${y shr 2}") // 2
+
+
+}
+~~~
+
+6-2. 비트 이동 연산자 ushr
+* 잘 이해가 안감..
+* 제일 왼쪽 비트에 0을 밀어 넣으면서 오른쪽으로 비트가 이동한다.(부호 비트 포함)
+
+~~~kotlin
+fun main() {
+    val number1 = 5
+    val number2 = -5
+
+    println(number1 shr 1) //2 (0101) -> (0010)
+    println(number1 ushr 1) // 왜 2??
+    println(number2 shr 1) // 1111 1111 1111 ..... 1111 0101 -> 맨뒤가 0110
+    println(number2 ushr 1) //책 참고
+}
+~~~
+
+6-3. 논리 연산자 or 
+
+6-4. 논리곱 연산자 and
+
+6-5. 배타적합 연산자 xor 
+
+* 베타적합을 이용하여 swap 가능
+
+~~~kotlin
+fun main() {
+    var number1 = 12
+    var number2 = 25
+
+    number1 = number1 xor number2
+    number2 = number1 xor number2
+    number1 = number1 xor number2
+
+    println("number1 - $number1") //25
+    println("number1 - $number2") //12
+
+}
+~~~
+
+6-6. 반전연산자 inv
+
+* 비트를 뒤집는다.
+
