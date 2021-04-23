@@ -253,6 +253,9 @@ fun main() {
 1. 함수 선언/호출
 
 *함수 구조
+
+1. 함수 선언할때 -> 매개변수
+2. 함수 호출할때 -> 인자
 ~~~ kotlin
 //기본
 fun sum(a:Int, b:Int): Int {
@@ -271,5 +274,7 @@ fun sum(a:Int, b:Int): Int = a + b
 //변환값 type 생략
 fun sum(a:Int, b:Int) = a + b
 ~~~
+
+
 
 *함수의 호출과 메모리
