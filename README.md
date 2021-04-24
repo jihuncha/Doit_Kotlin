@@ -250,7 +250,7 @@ fun main() {
 
 
 # 3. 함수와 함수형 프로그래밍
-1. 함수 선언/호출
+### 3-1.함수 선언/호출
 
 *함수 구조
 
@@ -278,3 +278,124 @@ fun sum(a:Int, b:Int) = a + b
 
 
 *함수의 호출과 메모리
+
+책 참고. stack에 대한 학습 필요(선입후출)
+
+main() 생성 -> max()생성 -> max()소멸 -> main()
+
+*반환값이 없는 함수
+
+1. 두 인자를 그대로 출력하는 함수 (반환값이 없을때는 Unit사) 
+   -> java void 와 비슷하나 unit의경우는 특수한 객체를 반환한다는 차이점이 있다.
+
+~~~kotlin
+fun printSum(a: Int, b: Int): Unit {
+    println("sum of $a and $b is ${a+b}")
+}
+~~~
+
+* 매개변수 제대로 활용하기
+1. 코틀린은 매개변수의 기본값 기능 제공
+
+~~~kotlin
+fun main() {
+    val name = "길동씨"
+    val email = "kildong@example.kr"
+
+    add(name) //default가 출력된다.
+    add(name, email)
+    add("하하하하","hohohoho.co.kr")
+    defaultArgs() //300
+    defaultArgs(200) //400
+}
+
+fun add(name:String, email:String = "default") {
+    val output = "${name}님의 이메일은${email}입니다"
+    println(output)
+}
+
+fun defaultArgs(x: Int = 100, y:Int = 200){
+    println(x+y)
+}
+
+~~~
+
+* 매개변수 이름과 함께 함수 호출하기
+
+~~~kotlin
+fun main() {
+    namedParam(x = 200, z = 100) // x,z의 이름과 함수를 같이 호출
+    namedParam(z = 150) // z의 이름과 함께 호출
+}
+
+fun namedParam(x: Int = 200, y: Int=200, z:Int){
+    println(x+y+z)
+}
+~~~
+
+* 매개 변수의 개수가 고정되지 않는 함수 사용하기
+
+인자가 3개,4개인 함수가있는데 동작만 동일하다면 함수를 여러개 만드는 행위는 낭비
+
+#### 코틀린에서는 가변 인자를 사용!!
+
+~~~kotlin
+fun main() {
+    normalVarargs(1,2,3,4) //1234
+    normalVarargs(5,6,7) //567
+}
+
+// 가변인자 vararg
+fun normalVarargs(vararg counts: Int) {
+    for (num in counts) {
+        print("$num ")
+    }
+
+    print("\n")
+}
+~~~
+
+### 3-2. 함수형 프로그래밍
+* 함수형 프로그래밍은 람다식/고차 함수를 사용
+
+* 순수 함수
+-> 부작용이 없는 함수가 함수 외부의 어떤 상태도 바꾸지 않는 경우
+
+~~~kotlin
+fun sum(a: Int, b:Int):Int {
+    return a+b // 동일한 인자인 a,b를 입력받아 항상 a + b를 출력
+}
+~~~
+* 순수 함수의 조건
+1. 같은 인자에 대하여 항상 같은 값을 반환한다.
+2. 함수 외부의 어떤 상태도 바꾸지 않는다.
+
+* 람다식
+1. 수학에서 람다
+   -> 이름이 없는 함수로 2개이상의 입력은 1개의 출력으로 단순화
+2. 함수형 프로그래밍의 람다
+   -> 다른 함수의 인자로 넘기는 함수, 함수의 결괏값으로 반환하는 함수, 변수에 저장하는 함수
+
+*일급 객체 
+함수형 프로그래밍 에서는 함수를 일급 객체로 생각한다.
+
+*일급 객체의 특징
+1. 일급 객체는 함수의 인자로 전달할 수 있다.
+2. 일급 객체는 함수의 반환 값에 사용할 수 있다.
+3. 일급 객체는 변수에 담을 수 있다.
+
+*고차 함수
+고차 함수는 다른 함수를 인자로 사용하거나 함수를 결괏값으로 반환하는 함수를 말합니다.
+
+~~~kotlin
+fun main() {
+    println(highFunc({x,y -> x * y},10,20))
+}
+
+fun highFunc(sum: (Int, Int) -> Int, a:Int, b:Int): Int = sum(a,
+~~~
+   
+*함수형 프로그래밍의 정의와 특징
+1. 순수 함수를 사용해야 한다.
+2. 람다식을 사용할 수 있다.
+3. 고차 함수를 사용할 수 있다.
