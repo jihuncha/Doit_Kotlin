@@ -401,3 +401,142 @@ fun highFunc(sum: (Int, Int) -> Int, a:Int, b:Int): Int = sum(a,
 3. 고차 함수를 사용할 수 있다.
 
 ### 3-3. 고차 함수와 람다식
+
+#### 일반 함수의 고차 함수의 형태
+
+* 일반 함수를 인자나 반환값으로 사용하는 고차 함수
+
+~~~kotlin
+//인자로 함수 사
+fun main() {
+    val res1 = sum(3,2)
+    val res2 = mul(sum(3,3), 3)
+
+    println("res1: $res1, rest2: $res2")
+}
+
+fun sum(a:Int, b:Int) = a+b
+fun mul(a:Int, b:Int) = a*b
+~~~
+
+~~~kotlin
+//반환값으로 함수 사
+fun main() {
+    println("funcfunc : ${funcFunc()}")
+}
+
+private fun sum(a: Int, b: Int) = a+b
+
+fun funcFunc():Int {
+    return sum(2,2)
+}
+~~~
+
+#### 람다식을 사용하는 고차 함수 형태
+
+~~~kotlin
+fun main() {
+    var result: Int
+    val multi = {x:Int, y:Int -> x * y}
+    result = multi(10, 20)
+    println(result) //200
+    println(multi) //(kotlin.Int, kotlin.Int) -> kotlin.Int
+}
+~~~
+
+~~~kotlin
+  //생략되지 않은 전체 표현
+    val multi1: (Int, Int) -> Int = {x:Int, y:Int -> x * y}
+    //선언 자료형 생략
+    val multi2 = {x:Int,y:Int -> x*y}
+    //람다식 매개변수 자료형의 생략
+    val multi3 :(Int,Int) -> Int ={x,y -> x*y}
+
+    val greet:() -> Unit={println("Hello")}
+    val square:(Int) -> Int ={x -> x*x}
+    
+    val nestedLamda: () -> () -> Unit = {{println("nested")}}
+~~~
+
+* 매개변수에 람다식 함수를 이용한 고차 함수
+~~~kotlin
+fun main() {
+    var result : Int
+    result = highOrder({x,y -> x+y}, 10,20)
+    println(result)
+}
+
+fun highOrder(sum_2:(Int, Int) -> Int, a:Int, b:Int):Int {
+    return sum_2(a,b)
+}
+~~~
+
+* 인자와 반환값이 없는 람다식 함수
+
+~~~kotlin
+fun main() {
+    //자료형 추론이 가능하므로 val out = {prinln("Hello World")} 같은 형태로 가
+    val out:() -> Unit = {println("Hihi")}
+
+    out()
+    val new = out
+    new()
+}
+~~~
+
+#### 람다식과 고차 함수 호출하기 
+* 자바나 코틀린은 함수를 호출할떄 인자의 값만 복사하는 '값의 의한 호출'(Call by Value) 가 일반적
+
+* C/C++은 포인터사용. '참조에 의한 호출(Call by Reference)'
+
+* 값에 의한 호출로 람다식 사용하기
+~~~kotlin
+
+fun main() {
+    val result = callByValue(lambda())
+    println(result)
+}
+
+fun callByValue(b: Boolean):Boolean {
+    println("callByValue function")
+    return b
+}
+
+val lambda: () -> Boolean = { //람다 표현식이 2줄
+    println("lambda function")
+    true // 마지막 표현식 문장의 결과가 반환
+}
+
+//lambda function
+//callByValue function
+//true
+~~~
+
+*이름에 의한 함다식 호출
+~~~kotlin
+fun main() {
+    val result = callByName(otherLambda)
+    println(result)
+}
+
+fun callByName(b: () -> Boolean):Boolean {
+    println("callByName function")
+    return b()
+}
+
+val otherLambda: () -> Boolean = {
+    println("otherLambda function")
+    true
+}
+
+//callByName function
+//otherLambda function
+//true
+~~~
+
+* 다른 함수의 참조에 의한 일반 함수 호출
+
+지금까지 람다식을 매개변수로 선언해서 사용 // 일반 함수 또는 다른 함수의 인자에서 호출하는 고차함수에 대해서
+
+
+
