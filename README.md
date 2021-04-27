@@ -281,7 +281,7 @@ fun sum(a:Int, b:Int) = a + b
 
 책 참고. stack에 대한 학습 필요(선입후출)
 
-main() 생성 -> max()생성 -> max()소멸 -> main()소
+main() 생성 -> max()생성 -> max()소멸 -> main()소멸
 
 * 반환값이 없는 함수
 
@@ -475,7 +475,7 @@ fun highOrder(sum_2:(Int, Int) -> Int, a:Int, b:Int):Int {
 
 ~~~kotlin
 fun main() {
-    //자료형 추론이 가능하므로 val out = {prinln("Hello World")} 같은 형태로 가
+    //자료형 추론이 가능하므로 val out = {prinln("Hello World")} 같은 형태로 가능
     val out:() -> Unit = {println("Hihi")}
 
     out()
