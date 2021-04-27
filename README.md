@@ -407,12 +407,12 @@ fun highFunc(sum: (Int, Int) -> Int, a:Int, b:Int): Int = sum(a,b)
 * 일반 함수를 인자나 반환값으로 사용하는 고차 함수
 
 ~~~kotlin
-//인자로 함수 사
+//인자로 함수 사용 
 fun main() {
     val res1 = sum(3,2)
     val res2 = mul(sum(3,3), 3)
 
-    println("res1: $res1, rest2: $res2")
+    println("res1: $res1, res2: $res2") //5 18
 }
 
 fun sum(a:Int, b:Int) = a+b
@@ -420,12 +420,12 @@ fun mul(a:Int, b:Int) = a*b
 ~~~
 
 ~~~kotlin
-//반환값으로 함수 사
+//반환값으로 함수 사용
 fun main() {
-    println("funcfunc : ${funcFunc()}")
+    println("funcfunc : ${funcFunc()}") //4
 }
 
-private fun sum(a: Int, b: Int) = a+b
+private fun sum(a: Int, b: Int) = a+b 
 
 fun funcFunc():Int {
     return sum(2,2)
@@ -437,8 +437,8 @@ fun funcFunc():Int {
 ~~~kotlin
 fun main() {
     var result: Int
-    val multi = {x:Int, y:Int -> x * y}
-    result = multi(10, 20)
+    val multi = {x:Int, y:Int -> x * y} //일반 변수에 람다식을 할당
+    result = multi(10, 20) // 람다식이 할당된 변수는 함수처럼 사용이 가능하다.
     println(result) //200
     println(multi) //(kotlin.Int, kotlin.Int) -> kotlin.Int
 }
