@@ -812,6 +812,8 @@ tailrec fun fibonacci(n: Int, a:BigInteger, b:BigInteger):BigInteger {
 
 # 4. 프로그램의 흐름 제어
 
+<hr>
+
 ### 4-1. 조건문
 
 * if - else 기본적인내용..
@@ -855,4 +857,158 @@ when (인자) {
     else -> 수행할 문장
 }
 ~~~
+
+* when 문 예시
+
+~~~kotlin
+fun main() {
+    print("Enter the Score:")
+
+    val score = readLine()!!.toDouble()
+    var grade: Char = 'F'
+
+    when(score) {
+        in 90.0..100.0 -> grade = 'A'
+        in 80.0..89.9 -> grade = 'B'
+        in 70.0..79.9 -> grade = 'C'
+        !in 70.0..100.0 -> grade = 'F'
+    }
+
+    println("Score: $score, Grade: $grade")
+}
+~~~
+
+*인자가 없는 when 
+
+~~~kotlin
+fun main() {
+    print("Enter the Score:")
+
+    val score = readLine()!!.toDouble()
+    var grade: Char = 'F'
+
+    //인자가 없음
+    when {
+        score >= 90.0 -> grade = 'A'   //인자 있는 when 문과 다르게 조건식을 구성 가능
+        score in 80.0..89.9 -> grade = 'B'
+        score in 70.0..79.9 -> grade = 'C'
+        score < 70.0 -> grade = 'F'
+    }
+
+    println("Score: $score, Grade: $grade")
+}
+~~~
+
+* 다양한 자료형의 인자 받기
+  * Any를 사용하여 다양한 자료형 인자를 받을 수 있다.
+    
+~~~kotlin
+fun main() {
+    cases("Hello")      //String
+    cases(1)            //Int
+    cases(System.currentTimeMillis())   // Long
+    cases(temp())                       // Not a String
+}
+
+fun cases(obj: Any) {
+    when (obj) {
+        1 -> println("Int: $obj")
+        "Hello" -> println("String: $obj")
+        is Long -> println("Long: $obj")
+        !is String -> println("Not a String")
+        else -> println("Unknown")
+    }
+}
+
+public class temp(){
+
+}
+~~~
+
+<hr>
+
+### 4-2. 반복문
+
+* for 문
+   * 자바는 for문에서 ;(세미콜론) 으로 초기화,조건,증감식을 구별함
+   * 코틀린은 앞에서 배운 in 연산자와 함께 사용.
+    
+~~~kotlin
+fun main() {
+    var sum = 0
+
+    for (x in 1..10) sum+=x
+    print("sum : $sum") //sum: 55
+}
+~~~
+
+* 하행,상행 및 다양한 반복 방법
+   * 하행은 in 대신 downTo를 써야한다(조금 불편한데..?)
+  ~~~kotlin
+  for (i in 5 downTo 1) print(i)
+  ~~~
+   
+   * 홀수의 계수만 사용하기 위해서는 step 사용
+  ~~~kotlin
+  for (i in 1..5 step 2) print(i)
+  ~~~
+  
+* for문을 활용한 삼각형 출력하기
+
+
+~~~kotlin
+fun main() {
+    print("Enter the lines:")
+    val n = readLine()!!.toInt()
+
+    for (line in 1..n){
+        for (space in 1..(n-line)) print(" ") //공백 출력
+        for (star in 1..(2* line -1)) print("*") //별표 출력
+        println() //개행
+    }
+}
+~~~
+
+* 1 ~ 100의 홀수 합 구하기
+
+~~~ kotlin
+fun main() {
+    var total: Int = 0
+
+    for (num in 1..100 step 2) total += num
+    println("Odd total: $total")  //2500
+
+    for (num in 0..99 step 2) total+= num
+    println("Even totla: $total") //4950
+
+
+}
+~~~
+
+* while문 , do-while 문
+   * 책 참고
+~~~
+while(조건식 {
+    본문
+    ....
+)
+~~~
+
+~~~
+do {
+    본문
+} while (조건식)
+~~~
+
+<hr>
+
+### 4-3. 흐름의 중단과 반환
+
+* return : 결과값 반환 / 지정된 라벨로 이동
+* break : for문이나 while문의 조건식 상관없이 반복문 종료
+* continue : for문이나 while문의 본문을 모두 수행하지 않고 조건식으로 넘어간다.
+
+* try(...) catch(...) : 예외 발싱시 catch 블록의 본문 실행
+* try(...) catch(...) finally(...) : 예외가 발생해도 finally 블록은 무조건 실행
+
 
