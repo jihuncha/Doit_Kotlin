@@ -1011,4 +1011,162 @@ do {
 * try(...) catch(...) : 예외 발싱시 catch 블록의 본문 실행
 * try(...) catch(...) finally(...) : 예외가 발생해도 finally 블록은 무조건 실행
 
+* return 으로 Unit 반환하기
+
+~~~kotlin
+//1. Unit 명시적 표현
+fun hello(name: String) :Unit {
+    println(name)
+    return Unit
+}
+
+//2. Unit 이름을 생략
+fun hello(name: String) :Unit {
+    println(name)
+    return
+}
+
+//3. return 자체를 생략
+fun hello(name: String) :Unit {
+    println(name)
+}
+~~~
+
+* 람다식에서 return 사용하기
+    * 람다식에서는 break,continue는 사용못한다.
+
+~~~kotlin
+fun main() {
+    retFunc()
+}
+
+inline fun inlineLambda(a: Int, b:Int, out: (Int, Int) -> Unit) {
+    out(a, b)
+}
+
+fun retFunc() {
+    println("start of retFunc")               //1
+    inlineLambda(10 ,3) { a,b ->        //2
+        val result = a + b
+        if(result > 10) return              //3 10보다 크면 이 함수를 빠져 나간다. -> 함수자체를 빠져나감
+        println("result : $result")         //4 10보다 크면 이 문장에 도달 못함
+    }
+    println("end of retFunc")               //5
+
+    //출력 : 10보다 큰 경우
+~~~
+
+* 람다식에서 라벨과 함께 return 사용하기
+    * 라벨을 정의해 return 사용
+    
+~~~ 
+람다식 함수 이름 라벨 이름@ {
+    ...
+    return@라벨 이름
+}
+~~~
+
+~~~kotlin
+fun main() {
+    retFunc()
+}
+
+private inline fun inlineLambda(a: Int, b:Int, out: (Int, Int) -> Unit) {
+    out(a, b)
+}
+
+private fun retFunc() {
+    println("start of retFunc")
+    inlineLambda(10 ,3) lit@{ a,b ->        //1 람다식 블록의 시작 부분에 라벨을 지정
+        val result = a + b
+        if(result > 10) return@lit              //2 라벨을 사용한 블록의 끝부분 반환
+        println("result : $result")
+    }
+    println("end of retFunc")                   //라벨을 사용하여 이 부분이 실행된다.
+
+    //출력 : start of retFunc
+    //      end of retFunc
+}
+~~~
+
+* 암묵적 라벨
+    * 람다식 표현식 블록에 직접 라벨을 쓰는 것이 아닌 람다식의 명칭을 그대로 라벨처럼 사용
+    
+~~~kotlin
+fun main() {
+    retFunc()
+}
+
+private inline fun inlineLambda(a: Int, b:Int, out: (Int, Int) -> Unit) {
+    out(a, b)
+}
+
+private fun retFunc() {
+    println("start of retFunc")
+    inlineLambda(10 ,3){ a,b ->        //1 람다식 블록의 시작 부분에 라벨을 지정
+        val result = a + b
+        if(result > 10) return@inlineLambda              //2 라벨을 사용한 블록의 끝부분 반환
+        println("result : $result")
+    }
+    println("end of retFunc")                   //라벨을 사용하여 이 부분이 실행된다.
+
+    //출력 : start of retFunc
+    //      end of retFunc
+}
+~~~
+
+* 익명 함수를 사용한 반환
+    * 람다식 대신에 익명 함수를 사용 가능
+    * 이떄는 라벨을 사용하지 않고도 가까운 익명 함수 자체가 반환됨 -> 위와 동일한 결과
+    
+~~~kotlin
+private fun retFunc() {
+    println("start of retFunc")
+    inlineLambda(10 ,3, fun (a,b) {       
+        val result = a + b
+        if(result > 10) return         
+        println("result : $result")
+    })
+    println("end of retFunc")                   
+
+    //출력 : start of retFunc
+    //      end of retFunc
+}
+~~~
+
+~~~kotlin
+// 람다식 방법
+val getMessage = lambda@ { num : int ->
+    if(num !in 1..100) {
+        return@lambda "Error"  //라벨을 통한 반환
+    }
+    "Success"   //마지막 식이 반환
+}
+
+// 익명 함수 방법
+val getMessage = fun(num : int):String { 
+    if(num !in 1..100) {
+        return "Error"  
+    }
+    return "Success"   
+}
+~~~
+
+* 람다식과 익명 함수를 함수에 할당할 때 주의할 점
+
+~~~
+fun greet() = {println("Hello")}
+
+greet() -> 아무것도 출력이 안됨.  {println("Hello")} 자체가 greet()함수에 할당된 것 뿐
+
+greet()함수가 가지고 있는 함수를 쓰기 위해서는
+
+greet()() 를 사용해야한다.
+
+또는
+
+fun greet() = fun(){println("Hello")}
+~~~
+
+* break 문과 continue문
 
