@@ -1302,3 +1302,72 @@ fun main() {
 ~~~
 
 * 객체와 인스턴스 정리하기
+
+'클래스로 부터 객체가 생성됩니다.'
+
+'**은 xx클래스의 인스턴스입니다.'
+
+<hr>
+
+### 5-2. 생성자
+
+* 생성자(Constructor) - 클래스를 통해 객체가 만들어질 때 기본적으로 호출되는 함수
+  * 생성자는 주 생성자(primary construcor) 와 부 생성자 (Secondary Constructor) 로 나누어짐
+
+~~~
+class 클래스 이름 constructor(필요한 매개변수..) {
+  ...
+  constructor(필요한 매개변수..) { //부 생성자 위치
+    //프로퍼티의 초기화
+  }
+  [constructor(필요한 매개변수..) {...}]
+  ...
+}
+~~~
+
+* 부 생성자
+  * 하기 로직과 책 참조..
+  
+~~~kotlin
+package com.kotlin.chap05.section2
+
+class Bird {
+    // 1 프로퍼티 - 선어만 함
+    var name: String
+    var wing: Int
+    var beak: String
+    var color: String
+    
+    // 2 부 생성자 - 매개변수를 통해 초기화할 프로퍼티에 지정
+    constructor(_name:String, wing: Int, beak:String, color:String) {
+        //this를 사용하고 싶지 않다면 _(언더스코어) 사용
+        name = _name
+//        this.name = name
+        this.wing = wing
+        this.beak = beak
+        this.color = color
+    }
+
+    //메서드
+    fun fly() = println("Fly wing: $wing")
+    fun sing(vol: Int) = println("Sing vol: $vol")
+}
+
+fun main() {
+    val coco = Bird("mybird", 2, "short","blue")    //3 생성자의 인자로 객체 생성과 동시에 초기화
+    
+    coco.color = "yellow"
+    println("coco.color: ${coco.color}")
+    coco.fly()
+    coco.sing(3)
+}
+
+//coco.color: yellow
+//Fly wing: 2
+//Sing vol: 3
+~~~
+
+
+
+
+
