@@ -292,5 +292,190 @@ HelloWorld
 ~~~
 
 * 오버라이딩
-  * 코틀린에서는 기반 클래스에서 open키워드, 파생 클래스에서 override 키워드를 사용
-  
+~~~kotlin
+// 상속 간으한 클래스를 위해 open 사용
+open class Bird(var name:String, var wing: Int, var beak:String, var color:String) {
+    // 메서드
+    fun fly( ) = println("Fly wing: $wing")
+    open fun sing(vol: Int) = println("Sing vol: $vol")
+}
+
+class Parrot(name: String, wing: Int = 2, beak: String, color: String, var language:String = "natural") : Bird(name,wing, beak, color) {
+    fun speak() = println("Speak! $language")   // parrot에 추가된 메서드
+    override fun sing(vol: Int) {   //오버 라이딩된 메서드
+        println("I'm a parrot! The volume level is $vol")
+        speak() //달라진 내용
+    }
+}
+
+fun main() {
+    val parrot = Parrot(name="myparrot", beak = "short", color = "multiple")
+    parrot.language = "English"
+    
+    println("Parrot : ${parrot.name},  ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}")
+    parrot.sing(5)  //달라진 메서드
+    
+}
+
+/*
+* Parrot : myparrot,  2, short, multiple, English
+I'm a parrot! The volume level is 5
+Speak! English
+* */
+~~~
+
+<hr>
+
+### 5-4. super와 this의 참조
+
+
+|super|this|
+|------|---|
+|super.프로퍼티 이름 // 상위 클래스의 프로퍼티 참고|this.프로퍼티 이름 //현재 클래스의 프로퍼티 참조|
+|super.메서드 이름() // 상위 클래스의 메서드 참조|this.메서드 이름() // 현재 클래스의 메서드 참조|
+|super() // 상위 클래스의 생성자 참조|this() // 현재 클래스의 생성자 참조|
+
+* super로 상위 객체 참고하기
+
+~~~kotlin
+open class Person {
+    constructor(firstName:String) {
+        println("[Person] firstName: $firstName")
+    }
+
+    constructor(firstName:String, age:Int) {    //3. 먼저 출력된다.
+        println("[Person] firstName: $firstName, $age")
+    }
+}
+
+class Developer: Person {
+    constructor(firstName: String): this(firstName, 10) {   //1. 처음에 여기 this 호출
+        println("[Developer] $firstName")
+    }
+
+    constructor(firstName: String, age:Int): super(firstName, age) {    //2.super로 이동
+        println("[Developer] $firstName")
+    }
+}
+
+fun main() {
+    val sean = Developer("Sean")
+}
+
+/*
+*
+[Person] firstName: Sean, 10
+[Developer] Sean
+[Developer] Sean
+*
+* */
+~~~
+
+* 주 생성자와 부 생성자 함께 사용하기
+
+~~~kotlin
+class Person(firstName: String, out:Unit = println("[Primary Constructor] Paramerter")) {   //주생성자
+    val fName = println("[Property] Person fName: $firstName")  //프로퍼티 할당
+
+    init {
+        println("[init] Person init block") //초기화 블록
+    }
+
+    //부 생성자
+    constructor(firstName: String, age:Int, out: Unit = println("[Secondary Constructor] Paramerter")): this(firstName) {
+        println("[Secondary Constructor] Body: $firstName, $age")   //부 생성자 본문
+    }
+}
+
+fun main() {
+    val p1 = Person("Kildong", 30)
+    println()
+    val p2 = Person("Dooly")
+}
+
+/*
+* [Secondary Constructor] Paramerter
+[Primary Constructor] Paramerter
+[Property] Person fName: Kildong
+[init] Person init block
+[Secondary Constructor] Body: Kildong, 30
+
+[Primary Constructor] Paramerter
+[Property] Person fName: Dooly
+[init] Person init block
+* 
+* */
+~~~
+
+* 바깥 클래스 호출하기
+  * 특정 클래스 안에 선언된 클래스를 이너 클래스(inner class) 라고 한다.
+  * 이너 클래스에서 바깥 클래스의 상위 클래스를 호출할려면 super키워드와 함께 @ 기호 옆에 바깥 클래스 이름을 작성
+
+~~~kotlin
+open class Base {
+    open val x: Int = 1
+    open fun f( ) = println("Base Class f()")
+}
+
+class Child: Base( ) {
+    override val x: Int = super.x + 1
+    override fun f ( ) = println("Child Class f( )")
+
+    inner class Inside {
+        fun f( ) = println("Inside Class f( )")
+        fun test( ) {
+            f() //현재 이너 클래스의 f() 접근
+            Child().f() //바로 바깥 클래스의 f() 접근
+            super@Child.f() //Child 상위 클래스인 Base클래스의 f() 접근
+            println("[Inside] super@Child.x: ${super@Child.x}") //Base의 x접근
+        }
+    }
+}
+
+fun main() {
+    val c1 = Child()
+    c1.Inside().test()
+}
+~~~
+
+* 인터페이스에서 참조하기
+  * 인터페이스(Interface) : 구현의 약속. 인터페이스를 참조하는 클래스는 인터페이스가 가지고 있는 내용을 구현해야하는 가이드를 제시한다.
+  * 코틀린은 자바처럼 다중 상속이 되지 않는다. // 인터페이스로는 필요한 만큼 다수의 인터페이스를 지정해 구현할 수 있다.
+  * 이때 각 인터페이스의 프로퍼티/메서드이름이 동일할 수 있다.
+  * 그런 경우 앵글 브래킷(<>) 을 사용해 접근하려는 클래스나 인터페이스 이름을 정해준다.
+
+~~~kotlin
+open class A {
+    open fun f() = println("A Class f()")
+    fun a( ) = println("A Class a()")
+}
+
+interface B {
+    fun f( ) = println("B interface f( )")  //인터페이스는 기본적으로 open임
+    fun b( ) = println("B interface b( )")
+}
+
+class C: A( ), B {  //쉼표를 사용해 클래스와 인터페이스를 지정
+    // 컴파일되려면 f( )가 오버라이딩 되어야 한다.
+    override fun f( ) = println("C Class f( )")
+
+    fun test( ) {
+        f() //현재 클래스의
+        b() //인터페이스의
+        super<A>.f()    //A 클래스의
+        super<B>.f()    //B 클래스의
+    }
+}
+
+fun main() {
+    val c = C( )
+    c.test()
+}
+
+/*
+C Class f( )
+B interface b( )
+A Class f()
+B interface f( )*/
+
+~~~
