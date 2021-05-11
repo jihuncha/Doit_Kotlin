@@ -1369,6 +1369,322 @@ fun main() {
 
 * 주 생성자
   * 주 생성자는 클래스 이름과 함께 생성자 정의를 이용할 수 있는 기법
+  
+* 프로피터를 포함한 주 생성자
+~~~kotlin
+class Bird(var name: String, var wing: Int, var beak: String, var color:String) {
+    // 프로퍼티는 매개변수 안에 var를 이용해 프로퍼티로서 선언되어 본문에서 생략함
+
+    fun fly() = println("Fly wing: $wing")
+    fun sing(vol:Int) = println("Sing vol:$vol")
+}
+
+fun main() {
+    val coco = Bird("mybird", 2, "short", "blue")
+
+    coco.color = "yellow"
+    println("coco.color : ${coco.color}")
+    coco.fly()
+    coco.sing(3)
+}
+~~~
+
+* 초기화 블록을 가진 주 생성자
+  * init 사용 - 객체 생성 시점에서 코드 수행 문장을 실행 할 수 있다.
+  
+~~~kotlin
+class Bird (var name: String, var wing: Int, var beak: String, var color:String){
+    // 초기화 블록
+    init {
+        println("--------초기화 블록 시작------------")
+        println("이름은 $name, 부리는 $beak")
+        this.sing(3)
+        println("--------초기화 블록 끝------------")
+    }
+
+    fun fly() = println("Fly wing: $wing")
+    fun sing(vol:Int) = println("Sing vol:$vol")
+    
+}
+
+fun main() {
+    val coco = Bird("mybird", 2, "short", "blue")   //생성과 함께 초기화블록이 실행된다.
+
+    coco.color = "yellow"
+    println("coco.color : ${coco.color}")
+    coco.fly()
+}
+~~~
+
+* 프로퍼티의 기본값 지정
+
+~~~kotlin
+//매개변수에 선언을 하여 기본값 지정 가능
+class Bird (var name: String = "NoName", var wing: Int,
+            var beak: String, var color:String) {
+    
+}
+~~~
+
+<hr>
+
+### 5-3. 상속과 다형성
+
+* 상속 
+  * 자식 클래스를 만들떄 상위 클래스의 속성과 기능을 계승
+  
+* 다형성
+  * 같은 이름을 사용하지만 구현 내용이 다르거나 매개변수가 달라서 하나의 이름으로 다양한 기능을 수행하는 개념
+  
+* 상속과 클래스의 계층
+  ![기본 클래스와 파생된 하위 클래스.png](src/com/kotlin/image/Inheritance.PNG)
+  
+
+* 하위 클래스 선언하기
+  * 변수 선언과 클래스 상속이 똑같은 콜론(:) 기호를 사용한다.
+~~~
+open class 기반 클래스 이름 { //묵시적으로 Any로 부터 상속됨, open으로 파생 가능
+  ...
+}
+class 파생 클래스 이름 : 기반 클래스 이름() { // 기반 클래스로부터 상속됨, 최종 클래스로 파생 불가
+  ...
+}
+~~~
+
+~~~kotlin
+//상속 가능한 클래스를 선언하기 위해 open 사용
+open class Bird(var name:String, var wing: Int, var beak:String, var color:String) {
+    //메서드
+    fun fly( ) = println("Fly wing: $wing")
+    fun sing(vol:Int) = println("Sing vol: $vol")
+}
+
+//주 생성자를 사용하는 상속
+class Lark(name:String, wing: Int, beak:String, color:String) : Bird(name,wing,beak,color) {
+    fun singHitone() = println("Happy Song!!") // 새로 추가한 메서드
+}
+
+//부 생성자를 사용하는 상속
+class Parrot : Bird {
+    val language: String
+    constructor(name: String, wing: Int, beak:String, color:String, language:String) : super(name,wing,beak,color) {
+        this.language = language // new 프로퍼티
+    }
+
+    fun speak() = println("Speak! $language")
+}
+
+fun main() {
+    val coco = Bird("mybird", 2, "short", "blue")
+    val lark = Lark("mylark", 2, "long", "brwon")
+    val parrot = Parrot("myparrot", 2, "short", "multiple","korean")
+
+    println("Coco: ${coco.name}, ${coco.wing}, ${coco.beak}, ${coco.color} ")
+    println("Lark: ${lark.name}, ${lark.wing}, ${lark.beak}, ${lark.color} ")
+    println("Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language} ")
+
+    lark.singHitone()   //추가한 메서드
+    parrot.speak()
+    lark.fly()
+}
+
+/*
+* Coco: mybird, 2, short, blue 
+Lark: mylark, 2, long, brwon 
+Parrot: myparrot, 2, short, multiple, korean 
+Happy Song!!
+Speak! korean
+Fly wing: 2
+* */
+~~~
+
+* 다형성
+  * 이름만 동일하고 매개변수를 다르게 / 실행 결과를 다르게
+  * 동작은 같지만 인자의 형식이 다른것 : 오버로딩(Overloading)
+  * 상위와 하위 클래스에서 메서드나 프로퍼티 이름은 같지만 기존의 동작을 다른 동작으로 재정의 : 오버라이딩(Overriding)
+  
+
+* 오버로딩
+
+~~~kotlin
+fun main() {
+    val calc = Calc()
+    println(calc.add(3,2))
+    println(calc.add(3.2,2.1))
+    println(calc.add(3,3, 2))
+    println(calc.add("Hello","World"))
+}
+
+class Calc{
+    fun add(x: Int, y:Int) : Int = x+y
+    fun add(x: Double, y:Double) :Double = x+y
+    fun add(x: Int, y:Int, z:Int) :Int = x+y+z
+    fun add(x: String, y:String) :String = x+y
+}
+
+/*
+* 5
+5.300000000000001
+8
+HelloWorld
+* */
+~~~
+
+* 오버라이딩
+~~~kotlin
+// 상속 간으한 클래스를 위해 open 사용
+open class Bird(var name:String, var wing: Int, var beak:String, var color:String) {
+    // 메서드
+    fun fly( ) = println("Fly wing: $wing")
+    open fun sing(vol: Int) = println("Sing vol: $vol")
+}
+
+class Parrot(name: String, wing: Int = 2, beak: String, color: String, var language:String = "natural") : Bird(name,wing, beak, color) {
+    fun speak() = println("Speak! $language")   // parrot에 추가된 메서드
+    override fun sing(vol: Int) {   //오버 라이딩된 메서드
+        println("I'm a parrot! The volume level is $vol")
+        speak() //달라진 내용
+    }
+}
+
+fun main() {
+    val parrot = Parrot(name="myparrot", beak = "short", color = "multiple")
+    parrot.language = "English"
+    
+    println("Parrot : ${parrot.name},  ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}")
+    parrot.sing(5)  //달라진 메서드
+    
+}
+
+/*
+* Parrot : myparrot,  2, short, multiple, English
+I'm a parrot! The volume level is 5
+Speak! English
+* */
+~~~
+
+<hr>
+
+### 5-4. super와 this의 참조
+
+
+|super|this|
+|------|---|
+|super.프로퍼티 이름 // 상위 클래스의 프로퍼티 참고|this.프로퍼티 이름 //현재 클래스의 프로퍼티 참조|
+|super.메서드 이름() // 상위 클래스의 메서드 참조|this.메서드 이름() // 현재 클래스의 메서드 참조|
+|super() // 상위 클래스의 생성자 참조|this() // 현재 클래스의 생성자 참조|
+
+* super로 상위 객체 참고하기
+
+~~~kotlin
+open class Person {
+    constructor(firstName:String) {
+        println("[Person] firstName: $firstName")
+    }
+
+    constructor(firstName:String, age:Int) {    //3. 먼저 출력된다.
+        println("[Person] firstName: $firstName, $age")
+    }
+}
+
+class Developer: Person {
+    constructor(firstName: String): this(firstName, 10) {   //1. 처음에 여기 this 호출
+        println("[Developer] $firstName")
+    }
+
+    constructor(firstName: String, age:Int): super(firstName, age) {    //2.super로 이동
+        println("[Developer] $firstName")
+    }
+}
+
+fun main() {
+    val sean = Developer("Sean")
+}
+
+/*
+*
+[Person] firstName: Sean, 10
+[Developer] Sean
+[Developer] Sean
+*
+* */
+~~~
+
+* 주 생성자와 부 생성자 함께 사용하기
+
+~~~kotlin
+class Person(firstName: String, out:Unit = println("[Primary Constructor] Paramerter")) {   //주생성자
+    val fName = println("[Property] Person fName: $firstName")  //프로퍼티 할당
+
+    init {
+        println("[init] Person init block") //초기화 블록
+    }
+
+    //부 생성자
+    constructor(firstName: String, age:Int, out: Unit = println("[Secondary Constructor] Paramerter")): this(firstName) {
+        println("[Secondary Constructor] Body: $firstName, $age")   //부 생성자 본문
+    }
+}
+
+fun main() {
+    val p1 = Person("Kildong", 30)
+    println()
+    val p2 = Person("Dooly")
+}
+
+/*
+* [Secondary Constructor] Paramerter
+[Primary Constructor] Paramerter
+[Property] Person fName: Kildong
+[init] Person init block
+[Secondary Constructor] Body: Kildong, 30
+
+[Primary Constructor] Paramerter
+[Property] Person fName: Dooly
+[init] Person init block
+* 
+* */
+~~~
+
+* 바깥 클래스 호출하기
+  * 특정 클래스 안에 선언된 클래스를 이너 클래스(inner class) 라고 한다.
+  * 이너 클래스에서 바깥 클래스의 상위 클래스를 호출할려면 super키워드와 함께 @ 기호 옆에 바깥 클래스 이름을 작성
+  
+~~~kotlin
+open class Base {
+    open val x: Int = 1
+    open fun f( ) = println("Base Class f()")
+}
+
+class Child: Base( ) {
+    override val x: Int = super.x + 1
+    override fun f ( ) = println("Child Class f( )")
+
+    inner class Inside {
+        fun f( ) = println("Inside Class f( )")
+        fun test( ) {
+            f() //현재 이너 클래스의 f() 접근
+            Child().f() //바로 바깥 클래스의 f() 접근
+            super@Child.f() //Child 상위 클래스인 Base클래스의 f() 접근
+            println("[Inside] super@Child.x: ${super@Child.x}") //Base의 x접근
+        }
+    }
+}
+
+fun main() {
+    val c1 = Child()
+    c1.Inside().test()
+}
+~~~
+
+* 인터페이스에서 참조하기
+  * 인터페이스(Interface) : 구현의 약속. 인터페이스를 참조하는 클래스는 인터페이스가 가지고 있는 내용을 구현해야하는 가이드를 제시한다.
+  * 코틀린은 자바처럼 다중 상속이 되지 않는다. // 인터페이스로는 필요한 만큼 다수의 인터페이스를 지정해 구현할 수 있다.
+  * 이때 각 인터페이스의 프로퍼티/메서드이름이 동일할 수 있다.
+  * 그런 경우 앵글 브래킷(<>) 을 사용해 접근하려는 클래스나 인터페이스 이름을 정해준다.
+  
+
+
 
 
 
