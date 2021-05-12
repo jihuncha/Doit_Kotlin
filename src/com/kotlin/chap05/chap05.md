@@ -603,7 +603,7 @@ fun main() {
 ~~~
 
 * 가시성 지시자와 클래스의 관계
-  ![가시성 접근자와 클래스의 관계.png](..\image\simple_example.PNG)
+  ![가시성 접근자와 클래스의 관계.png](../image/simple_example.PNG)
 
 
 * 자동차와 도둑의 예제
