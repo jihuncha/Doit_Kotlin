@@ -610,7 +610,7 @@ fun main() {
   * 자동차 - Car 클래스
   * Tico - 자동차 클래스 상속
   * 도둑 - 외부 클래스 Burglar
-  * 소스 : ([예제](section5\burglar\CarVisibilityPublic.kt))
+  * 소스 : ([예제](section5/burglar/CarVisibilityPublic.kt))
 
 <hr>
 
