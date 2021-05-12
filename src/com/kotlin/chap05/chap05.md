@@ -198,7 +198,8 @@ class Bird (var name: String = "NoName", var wing: Int,
     * 같은 이름을 사용하지만 구현 내용이 다르거나 매개변수가 달라서 하나의 이름으로 다양한 기능을 수행하는 개념
 
 * 상속과 클래스의 계층
-  ![기본 클래스와 파생된 하위 클래스.png](src/com/kotlin/image/Inheritance.PNG)
+  
+  ![기본 클래스와 파생된 하위 클래스.png](D:\test_space_second\kt_project\src\com\kotlin\image\Inheritance.PNG)
 
 
 * 하위 클래스 선언하기
@@ -293,7 +294,7 @@ HelloWorld
 
 * 오버라이딩
 ~~~kotlin
-// 상속 간으한 클래스를 위해 open 사용
+// 상속 가능한 클래스를 위해 open 사용
 open class Bird(var name:String, var wing: Int, var beak:String, var color:String) {
     // 메서드
     fun fly( ) = println("Fly wing: $wing")
@@ -497,7 +498,7 @@ B interface f( )*/
 ~~~
 
 
-![가시성 접근자.png](src/com/kotlin/image/visibility_modifier.PNG)
+![가시성 접근자.png](D:\test_space_second\kt_project\src\com\kotlin\image\visibility_modifier.PNG)
 
 * private
 
@@ -602,14 +603,14 @@ fun main() {
 ~~~
 
 * 가시성 지시자와 클래스의 관계
-  ![가시성 접근자와 클래스의 관계.png](src/com/kotlin/image/simple_example.PNG)
+  ![가시성 접근자와 클래스의 관계.png](D:\test_space_second\kt_project\src\com\kotlin\image\simple_example.PNG)
 
 
 * 자동차와 도둑의 예제
   * 자동차 - Car 클래스
   * Tico - 자동차 클래스 상속
   * 도둑 - 외부 클래스 Burglar
-  * 소스 : ([예제](src/com/kotlin/chap05/section5/burglar/CarVisibilityPublic.kt))
+  * 소스 : ([예제](D:\test_space_second\kt_project\src\com\kotlin\chap05\section5\burglar\CarVisibilityPublic.kt))
 
 <hr>
 
@@ -626,16 +627,16 @@ fun main() {
   * 연관 관계 (Association)
     - 서로 분리된 클래스가 연결을 가지는 것 (단방향/양방향)
     - 두 요소가 서로 다른 생명 주기를 가지고 있다.
-    - 소스 : ([연관 관계](src/com/kotlin/chap05/section6/association/AssociationTest.kt))
+    - 소스 : ([연관 관계](D:\test_space_second\kt_project\src/com/kotlin/chap05/section6/association/AssociationTest.kt))
 
   * 의존 관계 (Dependency)
-    - 소스 : ([의존 관계](src/com/kotlin/chap05/section6/dependency/DependencyTest.kt))
+    - 소스 : ([의존 관계](D:\test_space_second\kt_project\src/com/kotlin/chap05/section6/dependency/DependencyTest.kt))
 
   * 집합 관계 (Aggregation)
-    - 소스 : ([집합 관계](src/com/kotlin/chap05/section6/AggregationTest.kt))
+    - 소스 : ([집합 관계](D:\test_space_second\kt_project\src/com/kotlin/chap05/section6/AggregationTest.kt))
 
   * 구성 관계 (Composition)
-    - 소스 : ([구성 관계](src/com/kotlin/chap05/section6/composition/CompositionTest.kt))
+    - 소스 : ([구성 관계](D:\test_space_second\kt_project\src/com/kotlin/chap05/section6/composition/CompositionTest.kt))
 
 * 객체 간의 메시지 전달하기
   - UML의 시퀀스 다이어그램 으로 표현
