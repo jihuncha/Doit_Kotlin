@@ -479,3 +479,164 @@ A Class f()
 B interface f( )*/
 
 ~~~
+
+<hr>
+
+### 5-5. 정보 은닉 캡슐화
+
+* 캡슐화(Encapsulation) - 클래스를 작성할 때 숨겨야 하는 속성이나 기능
+
+* 가시성 지시자
+  * 각 클래스나 메서드, 프로퍼티의 접근 범위를 가시성(Visibility) 라고 한다.
+
+~~~
+* private : 외부에서 접근 불가능
+* pulbic : 어디서든 접근 가능
+* protected : 외부에서 접근할 수 없으나 상속 요소에서는 가능
+* internal : 같은 정의의 모듈 내부에서는 접근이 가능
+~~~
+
+
+![가시성 접근자.png](src/com/kotlin/image/visibility_modifier.PNG)
+
+* private
+
+~~~kotlin
+private class PrivateClass {
+    private var i = 1
+    private fun privateFunc() {
+        i += 1  //접근 허용
+    }
+    fun access() {
+        privateFunc() // 접근 허용
+    }
+}
+
+class otherClass {
+//    val opc = PrivateClass()    //접근 불가
+    fun test() {
+        val pc = PrivateClass() //접근 가능
+    }
+}
+
+fun main() {
+    val pc = PrivateClass() //생성 가능
+//    pc.i        // 접근 불가능
+//    pc.privateFunc()    //접근 불가
+
+}
+
+fun TopFunction() {
+    val tpc = PrivateClass()    //객체 생성 가능
+}
+~~~
+
+* protected
+
+~~~kotlin
+open class Base {   //최상위 클래스에서는 protected를 사용할 수 없음
+    protected var i = 1
+    protected fun protectedFunc( ) {
+        i += 1  //접근 허용
+    }
+    fun access() {
+        protectedFunc() //접근 허용
+    }
+    protected class Nested //내부 클래스에는 지시자 허용
+}
+
+class Derived : Base() {
+    fun test(base: Base):Int {
+        protectedFunc()     //Base 클래스의 메서드 접근 가능
+        return i            //Base 클래스의 프로퍼티 접근 가능
+    }
+}
+
+fun main() {
+    val base = Base()   //생성 가능
+//    base.i  // 접근 불가
+//    base.protectedFunc() // 접근 불가
+    base.access() // 접근 가능
+}
+~~~
+
+* internal
+  * 자바와 다르게 새로 정의된 이름
+  * Project단위의 Module을 의미한다.
+
+~~~kotlin
+internal class InternalClass {
+    internal var i = 1
+    internal fun icFunc() {
+        i += 1  //접근 허용
+    }
+    fun access() {
+        icFunc()    //접근 허용
+    }
+}
+
+class Other {
+    internal val ic = InternalClass()   //프로퍼티를 지정할떄 internal로 맞춰야함
+    fun test() {
+        ic.i        //접근가능
+        ic.icFunc() //접근가능
+    }
+}
+
+fun main() {
+    val mic = InternalClass()
+    mic.i
+    mic.icFunc()            //생성 및 접근 모두 가능
+}
+~~~
+
+* 다른 파일에서도 같은 모듈이면 접근 가능
+
+~~~kotlin
+fun main() {
+    val otheric = InternalClass()
+
+    println(otheric.i)
+    otheric.icFunc()
+}
+~~~
+
+* 가시성 지시자와 클래스의 관계
+  ![가시성 접근자와 클래스의 관계.png](src/com/kotlin/image/simple_example.PNG)
+
+
+* 자동차와 도둑의 예제
+  * 자동차 - Car 클래스
+  * Tico - 자동차 클래스 상속
+  * 도둑 - 외부 클래스 Burglar
+  * 소스 : ([예제](src/com/kotlin/chap05/section5/burglar/CarVisibilityPublic.kt))
+
+<hr>
+
+### 5-6. 클래스와 클래스의 관계
+
+* 클래스 혹은 객체 간의 관계
+  * 약한 참조 - 소유의 개념 없이 어떤 객체에서 또 다른 객체를 '이용한다'
+    1. 연관(Association)
+    2. 의존(Dependency)
+  * 집합 (Aggregation)  - 서로 따로 떨어져도 문제가 없음
+  * 구성 (Composition)  - 두 개체가 밀접하게 관련되어 독립적으로 존재가 어려움
+
+* 클래스 간의 관계를 판별하는 방법
+  * 연관 관계 (Association)
+    - 서로 분리된 클래스가 연결을 가지는 것 (단방향/양방향)
+    - 두 요소가 서로 다른 생명 주기를 가지고 있다.
+    - 소스 : ([연관 관계](src/com/kotlin/chap05/section6/association/AssociationTest.kt))
+
+  * 의존 관계 (Dependency)
+    - 소스 : ([의존 관계](src/com/kotlin/chap05/section6/dependency/DependencyTest.kt))
+
+  * 집합 관계 (Aggregation)
+    - 소스 : ([집합 관계](src/com/kotlin/chap05/section6/AggregationTest.kt))
+
+  * 구성 관계 (Composition)
+    - 소스 : ([구성 관계](src/com/kotlin/chap05/section6/composition/CompositionTest.kt))
+
+* 객체 간의 메시지 전달하기
+  - UML의 시퀀스 다이어그램 으로 표현
+  
