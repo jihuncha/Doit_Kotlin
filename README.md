@@ -2069,3 +2069,126 @@ class FakeAge {
 ~~~
 
 ### 6-2. 지연 초기화와 위임
+    * 객체의 정보가 나중에 나타나는 경우 객체 생성과 동시에 초기화하기 어려운 경우를 방지하기 위함
+    * lateinit / lazy 키워드 사용
+
+#### lateinit을 사용한 지연 초기화
+    * 기본 자료형들은 생성자에서 반드시 초기화해야하지만, 츼존성이 있는 초기화나 유닛 테스를 위한 코드를 작성하면서 설정에 의한 초기화를 할 경우에 사용
+    * 프로퍼티를 즉시 사용하지 않는데도 미리 생성해서 초기화하는 경우 (메모리 낭비의 경우)
+
+#### lateinit의 제한
+    * var로 선언된 프로퍼티만 가능하다
+    * 프로퍼티에 대한 게터와 세터를 사용할 수 없다.
+  
+~~~kotlin
+// lateinit 사용의 예
+class Person {
+    lateinit var name: String
+
+    fun test() {
+        //::은 프로퍼티 참조를 위해 사용
+        //! 은 not 의 의미
+        if(!::name.isInitialized) { // 프로퍼티의 초기화 여부 판단
+            println("not initialized")
+        } else {
+            println("initialized")
+        }
+    }
+}
+
+fun main() {
+    val kildong = Person()
+    kildong.test()
+    kildong.name = "Kildong" // 이 시점에서 초기화가 된다. (지연초기화)
+    kildong.test()
+    println("name = ${kildong.name}")
+}
+~~~
+
+#### 객체 지연 초기화하기
+~~~kotlin
+data class Person(var name:String, var age:Int)
+
+lateinit var person1: Person
+
+fun main() {
+    person1 = Person("Kildong", 30) //생성자 호출 시점에서 초기화됨
+}
+~~~
+
+#### lazy를 사용한 지연 초기화
+    * lateinit은 val을 허용하지 않는다.
+    * val 전용으로 lazy를 사용!
+    * 특징
+      1. 호출 시점에 by lazy(...) 정의에 의해 블록 부분의 최고하를 진행한다.
+      2. 불변의 변수 선언인 val에서만 사용 가능하다(읽기 전용)
+      3. val이므로 값을 다시 변경할 수 없다.
+
+#### 프로퍼티 지연 초기화하기
+    * lazy는 람다식으로 구성되어 lazy인스턴스 반환값을 가지는 함수
+
+~~~kotlin
+class LazyTest {
+    init {
+        println("init block") // (2)
+    }
+
+    val subject by lazy {
+        println("lazy initialized") // (6)
+        "Kotlin Programming" // (7) lazy 반환값
+    }
+    fun flow() {
+        println("not initialized") // (4)
+        println("subject one: $subject") // (5) 최초 초기화 시점!
+        println("subject two: $subject") // (8) 이미 초기화된 값 사용
+    }
+}
+
+fun main() {
+    val test = LazyTest() // (1)
+    test.flow() // (3)
+}
+
+//init block 
+//not initialized
+//lazy initialized
+//subject one: Kotlin Programming
+//subject two: Kotlin Programming
+~~~
+
+#### 객체 지연 초기화하기
+
+~~~kotlin
+class Person(val name: String, val age: Int)
+
+fun main() {
+    var isPersonInstantiated: Boolean = false
+
+    val person : Person by lazy {           //by lazy 를 사용한 person 객체의 지연 초기화
+        isPersonInstantiated = true
+        Person("Kim", 23)           // 이 부분이 lazy 객체로 반환됨.
+    }
+    val personDelegate = lazy { Person("Hong", 40) }
+
+    println("person Init: $isPersonInstantiated")
+    println("personDelegate Init: ${personDelegate.isInitialized()}")
+
+    println("person.name = ${person.name}")  // 이 시점에서 초기화
+    println("personDelegate.value.name = ${personDelegate.value.name}")  // 이 시점에서 초기화
+
+    println("person Init: $isPersonInstantiated")
+    println("personDelegate Init: ${personDelegate.isInitialized()}")
+}
+~~~
+
+#### lazy 모드 확인하기
+    * lazy()는 매개변수 없는 람다식을 받을 수 있으며 Lazy<T>를 반환
+    * lazy()의 실행은 구현부 SynchronizedLazyImp()에 보내 처리
+    * mode의 경우 Synchronized, Publication, None 으로 지정 가능
+      1. SYNCHRONIZED: lock을 사용해 단일 스레드만이 사용하는 것을 보장
+      2. PUBLICATION: 여러 군데에서 호출될 수 있으나, 처음 초기화된 후 반환값을 사용한다.
+      3. NONE: lock을 사용하지 않기 때문에 빠르지만 다중 스레드가 접근할 수 있다.(값의 일관성을 보장할 수 없음)
+
+![lazy모드.png](src/com/kotlin/image/lazy_mode.PNG)
+    
+#### by를 이용한 위임
