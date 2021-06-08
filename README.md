@@ -2192,3 +2192,106 @@ fun main() {
 ![lazy모드.png](src/com/kotlin/image/lazy_mode.PNG)
     
 #### by를 이용한 위임
+    * 위임 (Delegation) - 어떤 특정일을 대신해주는 중간자 역할
+    * 특정 클래스를 확장하거나 이용할 수 있도록 by를 사용 가능
+    * by를 사용하면 하나의 클래스가 다른 클래스에 위임을 함으로써 `클래스가 가지는 멤버를 참조없이 호출 가능` 
+    * <val|var|class> 프로퍼티 혹은 클래스이름 : 자료형 by 위임자 
+
+#### 클래스의 위임
+  * 위임을 사용하는 이유 : 코틀린의 표준 라이브러리는 open으로 정의되지 않는 클래스를 사용하고 있다. = 모두 final형태
+                    -> 상속이나 직접 클래스 확장이 어려움
+    
+~~~kotlin
+interface Car {
+  fun go(): String
+}
+
+class VanImpl(val power: String): Car {
+  override fun go() = "는 짐을 적재하며 $power 마력을 가집니다."
+}
+
+class SportImpl(val power: String): Car {
+  override fun go() = "는 경주용에 사용되며 $power 마력을 가집니다."
+}
+
+class CarModel(val model: String, impl: Car): Car by impl {
+  fun carInfo() {
+    println("$model ${go()}") // 참조 없이 각 인터페이스 구현 클래스의 go를 접근
+  }
+}
+
+fun main() {
+  val myDamas = CarModel("Damas 2010", VanImpl("100마력"))
+  val my350z = CarModel("350Z 2008", SportImpl("350마력"))
+
+  myDamas.carInfo()     //다형성 
+  my350z.carInfo()
+}
+
+//Damas 2010 는 짐을 적재하며 100마력 마력을 가집니다.
+//350Z 2008 는 경주용에 사용되며 350마력 마력을 가집니다.
+~~~
+
+#### 프로퍼티 위임과 by lazy
+  1. lazy 람다식은 람다식을 전달받아 저장된 Lazy<T> 인스턴스를 반환한다.
+  2. 최초 프로퍼티의 게터 실행은 lazy에 남겨진 람다식을 실행하고 결과를 기록한다.
+  3. 이후 프로퍼티 게터 실행은 이미 초기화되어 기록된 값을 반환한다.
+
+  * by lazy에 의한 초기화는 스레드에 좀 더 안정적으로 프로퍼티를 사용 할 수 있음
+
+#### observable() 함수와 vetoable() 함수의 위임
+    1. 코틀린에 표준 위임 구현 함수
+    2. Delegates 를 임포트해야한다.
+    * Observable - 변경이 일어날때마다 호출 처리
+    * Vetoable - 반환값에 따라 프로퍼티 변경을 허용/취소가 가능
+
+* Observable 예시
+~~~kotlin
+import kotlin.properties.Delegates
+
+class User {
+    // observable은 값의 변화를 감시하는 일종의 콜백 루틴
+    var name: String by Delegates.observable("NONAME") {
+            prop, old, new -> // 프로퍼티, 기존값, 새로운 값
+        println("$old -> $new") // 이 부분은 이벤트가 발생할 때만 실행
+    }
+}
+
+fun main() {
+    val user = User()
+    user.name = "Kildong" // 값이 변경되는 시점에서 첫 이벤트 발생
+    user.name = "Dooly" // 값이 변경되는 시점에서 두 번째 이벤트 발생
+}
+
+//NONAME -> Kildong
+//Kildong -> Dooly
+~~~
+
+* Vetoable 예시
+  * 책에 notifydatasetchanged 호출하는 부분!! 안드로이드에서 쓸 듯 
+~~~kotlin
+import kotlin.properties.Delegates
+
+fun main() {
+
+    var max: Int by Delegates.vetoable(0) { // 초기값은 0
+            prop, old, new ->
+        new > old // 조건에 맞지 않으면 거부권 행사
+    }
+
+    println(max) // 0
+    max = 10
+    println(max) // 10
+
+    // 여기서는 기존값이 새 값보다 크므로 false 따라서 5를 재할당 하지 않음
+    max = 5
+    println(max) // 10
+}
+~~~
+
+<br>
+
+### 6-3. 정적 변수와 컴패니언 객체
+
+
+
