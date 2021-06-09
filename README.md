@@ -2292,6 +2292,70 @@ fun main() {
 <br>
 
 ### 6-3. 정적 변수와 컴패니언 객체
+    * 변수는 사용 범위에 따라 지역 변수 / 전역 변수로 나뉘어짐
+    * 클래스는 인스턴스를 새엇ㅇ해 메모리에 동적으로 초기화해서 사용
+    * 클래스의 메서드나 프로퍼티도 코드이 블록 영역에 따라 사용하는 범위가 결정됨
+    * 동적인 초기화 없이 사용할 수 있는 방법
+      1. 정적 변수 (Static Variable)
+      2. 컴패니언 객체 (Companion Object)
+
+#### 정벅 변수와 컴패니언 객체
+    * 일반적인 클래스의 객체 생성 없이 정적 변수나 메서드를 사용하면 프로그램 실행 시 메모미를 고정적으로 가진다.
+      -> 인스턴스화 없이 사용 가능
+
+#### 컴패니언 객체 사용하기
+    * 코틀린에서 정적 변수를 사용할 떄 static 키워드가 없는 대신 컴패니언 객체를 제공
+    * 실제 객체의 싱글톤으로 정의됨
+    * 싱글톤 - 전역 변수를 사용하지 않고 객체를 하나만 생성하여, 생성된 객체를 어디에서든지 참조할 수 있도록 하는 디자인 패턴
+
+~~~kotlin
+class Person {
+    var id: Int = 0
+    var name: String = "Youngdeok"
+    companion object { // 컴페니언 객체의 정의
+        var language: String = "Korean"
+        fun work() {
+            println("working...")
+        }
+    }
+}
+
+fun main() {
+    println(Person.language)  // 인스턴스를 생성하지 않고 기본값 사용
+    Person.language = "English" // 기본값 변경 가능
+    println(Person.language) // 변경된 내용 출력
+    Person.work() // 메서드 실행
+    //println(Person.name) // name은 companion object가 아니므로 오류
+}
+
+//Korean
+//English
+//working...
+~~~
+
+#### 코틀린에서 자바의 static 멤버 사용하기
+    * 하기 예시 참고.
+
+~~~java
+// 자바의 Customer 클래스
+public class Customer {
+  public static final String LEVEL = "BASIC";  // static 필드
+  public static void login() { // static 메서드
+    System.out.println("Login...");
+  }
+}
+~~~
+
+~~~kotlin
+// 코틀린에서 자바의 static 접근
+fun main() {
+    println(Customer.LEVEL)
+    Customer.login()
+}
+~~~
+
+
+
 
 
 
