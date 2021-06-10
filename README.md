@@ -2201,6 +2201,7 @@ fun main() {
   * 위임을 사용하는 이유 : 코틀린의 표준 라이브러리는 open으로 정의되지 않는 클래스를 사용하고 있다. = 모두 final형태
                     -> 상속이나 직접 클래스 확장이 어려움
     
+    
 ~~~kotlin
 interface Car {
   fun go(): String
