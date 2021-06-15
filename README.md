@@ -2362,12 +2362,154 @@ fun main() {
 
 #### 자바에서 코틀린 컴패니언 객체 사용하기
     * @JvmStatic 애노테이션(annotation) 표기 사용 필요
+    * 프로퍼티를 자바에서 사용하고자 할 경우에는 @JvmField 에노테이션 사용
+    * 캠패니언 객체는 외부 클래스에서 private 프로퍼티에도 접근할 수 있기 때문에 유틸리티 클래스 등을 만드는 데 사용가능
+
+~~~kotlin
+class KCustomer {
+  companion object {
+    //const 컴파일 시간의 상수 - 컴파일 시간에 이미 값이 할당되는 것으로 자바에서 접근하기 위해 필요
+    const val LEVEL = "INTERMEDIATE"
+    @JvmStatic fun login() = println("Login...") // 어노테이션 표기 사용
+    @JvmStatic val score = 3
+    @JvmField val JOB = KJob()
+  }
+}
+
+class KJob {
+  var title: String = "Programmer"
+}
+~~~
+
+~~~java
+public class KCustomerAccess {
+    public static void main(String[] args) {
+
+        // 코틀린 코드의 KotlinFoo의 멤버를 접근
+        System.out.println(KCustomer.LEVEL);
+        KCustomer.login(); // 어노테이션을 사용할 때 접근 방법
+        KCustomer.Companion.login(); // 위와 동일한 결과로 어노테이션을 사용하지 않을 때 접근 방법
+
+        // KJob에 대한 객체 생성 후 접근
+        KJob kjob = KCustomer.JOB;
+        System.out.println(kjob.getTitle());
+
+        // KCostomer를 통한 접근
+        KCustomer.JOB.setTitle("Accountant");
+        System.out.println(KCustomer.JOB.getTitle());
+    }
+}
+~~~
 
 
+#### 최상위 함수 사용하기
+    
+~~~kotlin
+//@file:JvmName("PKLevel")
+// 패키지 레벨 함수 혹은 최상위 함수라고 함
+fun packageLevelFunc() {
+    println("Package-Level Function")
+}
 
+fun main() {
+    packageLevelFunc()
+}
 
+//Package-Level Function
+~~~
 
+~~~java
+public class PackageLevelAccess {
+    public static void main(String[] args) {
 
+         PackageLevelFunctionKt.packageLevelFunc();
+//        PKLevel.packageLevelFunc();
+    }
+}
+
+//Package-Level Function
+~~~
+
+* @file:JvmName("PKLevel") 추가함으로써 하기 자바에서 PKLevel.packageLevelFunc(); 로 실행해야한다.
+
+#### object와 싱글톤
+    * object 선언 방식 - 접근 시점에 객체가 생성됨 (싱글톤 패턴에 이용)
+    * 자바에서 Object선언에 접근하려면 INSTANCE를 사용하여 접근.
+
+[object 선언과 컴패니언 객체 비교하기]
+~~~
+// 1. object 키워드를 사용한 방식
+object OCustomer {
+    var name = "Kildong"
+    fun greeting() = println("Hello World!")
+    val HOBBY = Hobby("Basketball")
+    init {
+        println("Init!")
+    }
+}
+
+// 2. companion object를 사용한 방식
+class CCustomer {
+    companion object {
+        const val HELLO = "hello"  // 상수 표현
+        var name = "Joosol"
+        @JvmField val HOBBY = Hobby("Football")
+        @JvmStatic fun greeting() = println("Hello World!")
+    }
+}
+
+class Hobby(val name: String)
+
+fun main() {
+
+    OCustomer.greeting()
+    OCustomer.name = "Dooly"
+    println("name = ${OCustomer.name}")
+    println(OCustomer.HOBBY.name)
+
+    CCustomer.greeting()
+    println("name = ${CCustomer.name}, HELLO = ${CCustomer.HELLO}")
+    println(CCustomer.HOBBY.name)
+}
+~~~
+
+[자바에서 object 선언의 접근]
+~~~java
+public class OCustomerAccess {
+    public static void main(String[] args) {
+        String name = OCustomer.INSTANCE.getName(); // 코틀린의 object 선언 객체의 메서드 접근
+        System.out.println(name);
+    }
+}
+~~~
+
+#### object 표현식
+    * object 표현식은 object선언과 달리 이름이 없고 싱글톤이 아니다.
+    * 사용할 때마다 새로운 인스턴스가 생성됨
+    * 이름이 없는 익명 내부 클래스로 불리는 형태를 만들 수 있음
+
+[object 표현식 사용해 보기 - 하위 클래스를 만들지 않고 특정 메서드를 오버라이딩]
+
+~~~kotlin
+open class Superman() {
+    fun work() = println("Taking photos")
+    fun talk() = println("Talking with people.")
+    open fun fly() = println("Flying in the air.")
+}
+
+fun main() {
+    val pretendedMan = object: Superman() { // object 표현식으로 fly()구현의 재설계
+        override fun fly() = println("I'm not a real superman. I can't fly!")
+    }
+    pretendedMan.work()
+    pretendedMan.talk()
+    pretendedMan.fly()
+}
+
+//Taking photos
+//Talking with people.
+//I'm not a real superman. I can't fly!
+~~~
 
 
 
