@@ -2524,8 +2524,101 @@ fun main() {
 1. abstract 키워드로 사용
 2. 일반적인 객체 생성 방법으로 인스턴스화는 불가능하고 하위 클래스가 어떻게 만들어야하는지 나타내는 용도
 
+* 추상클래스의 정의와 구현 
+~~~  
+abstract class Vehicle
+~~~
+1. 프로퍼티나 메서드도 abstract 가능 -> 추상 프로퍼티/ 추상 메서드
+2. 클래스를 상속하려면 open 키워드를 정의해야하나, 추상 클래스에서는 상속을 위해 open 키워드 사용이 필요없음.
+3. 추상 클래스 abstract 자체에서는 상속과 오버라이딩을 허용하고 있기 때문
+    
+    * 소스 참고 - [AbstractVehicle.kt](src/com/kotlin/chap07/section1/AbstractVehicle.kt)
 
+* 추상 클래스로부터 하위 클래스를 생성하지 않고 단일 인스터로 객체를 생성할 경우 -> object를 사용하여 지정
+    * 소스 참고 - [AbstractObject.kt](src/com/kotlin/chap07/section1/AbstractObject.kt)
 
+<br>
 
+#### 인터페이스
 
+* 특징
 
+1. interface에는 abstract로 정의된 추상 메서드 / 일반 메서드가 포함됨
+2. 다른 객체 지향 언어와 다르게 메서드에 구현 내용이 포함될 수 있다.
+3. 프로퍼티를 통해 상태를 저장할 수 없다. 선언만 가능하다.
+
+`추상 클래스와 다른 점 : 다중 상속이 가능하다, 연결도가 낮다(추상 클래스는 상위 클래스 변동에 영향을 받음)`
+
+* 인터페이스의 선언과 구현
+    
+    1. 자바에서는 상속은 extends, implements 키워드를 쓰지만 kotlin에서는 : 로 표현
+~~~
+interface 인터페이스 이름 [: 인터페이스 이름...] {
+  추상 프로퍼티 선언
+  추상 메서드 선언
+  [일반 메서드 선언 {...}]
+}
+~~~
+
+* 소스 참고 1: [InterfacePet.kt](src/com/kotlin/chap07/section1/InterfacePet.kt)
+* 소스 참고 2: [CatAndDog.kt](src/com/kotlin/chap07/section1/CatAndDog.kt)
+
+* 여러 인터페이스의 구현
+    * 여러개의 인터페이스로부터 구현 -> 다중 상속과 같은 형태가 됨 
+    * 소스 참고 : [PegasusTest.kt](src/com/kotlin/chap07/section1/PegasusTest.kt)
+  
+* 인터페이스의 위임
+    * 인터페이스도 by 위임자 사용하여 위임이 가능하다.
+~~~kotlin
+interface Temp_a {
+    fun functionA(){}
+}
+
+interface Temp_b {
+    fun functionB(){}
+}
+
+class Temp_c(val a:Temp_a, val b:Temp_b) {
+    fun function() {
+        a.functionA()
+        b.functionB()
+    }
+}
+
+//위임 사용
+class DelegatedC(a:Temp_a, b:Temp_b): Temp_a by a, Temp_b by b {
+  fun function() {
+    functionA()
+    functionB()
+  }
+}
+~~~
+
+* 위임을 이용한 메멉 접근
+
+~~~kotlin
+interface Nameable {
+    var name: String
+}
+
+class StaffName: Nameable{
+    override var name: String = "Sean"
+}
+
+class Work: Runnable {
+    override fun run() {
+        println("work....")
+    }
+}
+
+//각 매개변수에 해당 인터페이스를 위임
+class Person(name:Nameable, work:Runnable): Nameable by name, Runnable by work
+
+fun main() {
+    val person = Person(StaffName(), Work())    //생성자를 사용해 객체 바로 전달
+    println(person.name)    //여기서 StaffName클래스의 name접근
+    person.run()            // Work 클래스 run 접근
+}
+~~~
+
+* 커피 제조기 만들어 보기 -> 책 참고..
